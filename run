@@ -1,9 +1,15 @@
 #!/bin/bash
 set -eu
 this_dir=$(readlink -e "${0%%/*}")
+gitconf="$this_dir/jenkins-gitconfig"
+if [[ ! -r $gitconf ]]; then
+    echo >&2 "set up a gitconfig at $gitconf for Jenkins to use"
+    exit 1
+fi
 jenkins_home="$this_dir/home"
 mkdir -p "$jenkins_home" 2>/dev/null || true
 sudo docker run -p 8080:8080 -p 50000:50000 \
     -v "$jenkins_home":/var/jenkins_home \
+    -v "$gitconf":/var/jenkins_home/.gitconfig \
     -v "$HOME"/.ssh:/var/jenkins_home/.ssh \
     docker-jenkins-slave
