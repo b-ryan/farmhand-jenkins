@@ -1,0 +1,3 @@
+#!/bin/bash
+set -eu
+sudo docker build -t docker-jenkins-slave .
